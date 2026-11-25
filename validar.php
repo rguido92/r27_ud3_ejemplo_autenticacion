@@ -24,10 +24,12 @@ $username = $_POST['usuario'];
 $password = $_POST['password'];
 
 try {
-     // Iniciar la sesión
+    // Iniciar la sesión
     session_start();
-    
+
     $usuario = getUsuarioByUserName($username);
+    // var_dump($usuario);
+    // exit;
 } catch (Exception $e) {
     error_log("Error al consultar el usuario: " . $e->getMessage());
     $_SESSION['error_login'] = "Error al consultar el usuario. Por favor, inténtelo de nuevo más tarde.";
@@ -38,17 +40,17 @@ try {
 // Comprobar las credenciales
 if ($usuario !== null && password_verify($password, $usuario['password'])) {
 
-   
 
 
-    // Guardar la identidad del usuario
+
+    // Guardar la identidad del usuari
     $_SESSION['id_usuario'] = $usuario['id'];
     $_SESSION['usuario'] = $usuario['usuario'];
-
+    $_SESSION['rol'] = $usuario['rol'];
     // Acceder a la página privada
-    header("Location: privada.php");
+    $destino = ($usuario['rol'] === 'admin') ? 'admin.php' : 'privada.php';
+    header("Location: $destino");
     exit;
-
 } else {
 
     session_start();
